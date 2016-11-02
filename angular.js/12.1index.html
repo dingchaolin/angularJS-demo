@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="logger"></div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //angular 可以作为库来使用
+    //angular.element 操作dom
+    //angular.injector 创建注射器
+    angular.element(document).ready( function(){
+        angular.element(document.querySelector('#logger')).text('hello');
+    })
+</script>
+</html>

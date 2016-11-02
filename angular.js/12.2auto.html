@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<tu></tu>
+</body>
+<script src="angular.js"></script>
+<script>
+    angular.module('dclMod',[]);
+    angular.module('dclMod').directive('tu', function( ){
+        return {
+            restrict:'E',
+            replace:true,
+            template:'<img src="./img.jpg" style="width:200px;height:400px"/>'
+        }
+    })
+</script>
+</html>

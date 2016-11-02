@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod" >
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body ng-init="isShow=true">
+<div  ng-controller="watchCtrl"   ng-if="isShow">
+    <input type="text" ys-model="age">
+    <p>{{age}}</p>
+    <button ng-click="hide()">hide</button>
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //39.00
+   angular.module('dclMod', [] );//两个参数  定义一个模块
+   //一个参数 获取一个模块
+   angular.module('dclMod').controller('watchCtrl', function( $rootScope, $scope,$timeout ){
+          //$timeout( function(){ $scope.age = 333 },2000 );
+          //每当age发生变化的时候 回调函数都会执行
+          $scope.$watch('age', function ( newVal, oldVal ){
+              console.log( newVal, oldVal );
+          })
+           $scope.hide = function(){
+               $rootScope.isShow = false;
+           }
+
+           $scope.$on('$destroy', function(){
+               console.log( 'destroy' );
+           })
+      })
+   angular.module('dclMod').directive( 'ysModel', function(){
+       return {
+           link:function( scope, element, attr ){// 作用域 当前元素的jquery对象 属性对象
+               //1.当前input value发生变化的时候 修改scope上对应的属性
+               element.on('change', function(){
+                   scope[attr['ysModel']] = element.val();
+                   //强行进行脏值检查
+                   scope.$apply();
+               });
+
+               scope.$watch(attr['ysModel'], function( newVal){
+                   element.val( newVal );
+               });
+
+
+
+           }
+       }
+   })
+
+</script>
+</html>

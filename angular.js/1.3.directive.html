@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+</head>
+<body>
+<div style="width:100px;height:100px" dcl-color>
+    hello
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+        //model
+        var user = {
+            name:'dcl'
+        };
+        //$scope叫做视图模型  修改了这里 view也会修改   双向数据绑定
+        //mvvm的好处
+        /*
+         1.低耦合  一个视图模型可以绑定到不同的view上
+         2.可重用性
+         3.独立开发
+         4.可测试性
+         */
+        $scope.name = user.name;
+        $scope.add = function( a, b ){
+            return a+b;
+        }
+
+    });
+    // 1:08
+    //原则：不要在控制器中操作dom元素  要在link中操作dom元素  link是唯一允许操作dom元素的地方
+    //控制器是用来增强scope的 但是不要去操作dom
+    //angular.js 是以数据为中心的
+    //创建一个指令
+    //装饰式指令
+    //指定定义的时候必须使用骆驼命名法 使用该指令的时候 所有单词的大写字母换成小写字母 并且要加 -  如：dcl-color
+    angular.module('helloAngular').directive('dclColor',function(){//要以login-panel方式使用
+        return {
+
+            link:function( scope, element, attrs ){
+                //scope : 当前作用域
+                //element:当前要增强的元素  当前元素的jquery对象
+                //attrs:当前元素所有属性的集合
+                element.css('color','red' );
+                element.on( 'click',  function(){
+                    alert( element.html() );
+                });
+
+
+            }
+        }
+    });
+</script>
+</html>

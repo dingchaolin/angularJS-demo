@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="dclCtrl">
+<div >
+    条件:<input type="text" ng-model="query">
+    <ul>
+        <!--每一个li都是一个独立的作用域   多个属性的时候 只要有一个属性满足即可 -->
+        <li ng-repeat="phone in phones | filter:query">{{phone.name }}</li>
+    </ul>
+
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller( 'dclCtrl', function($scope){
+        $scope.phones = [{name:'sanerzi2',age:1},
+            {name:"xiaomi3",age:2},
+            {name:"hhuawei1",age:3}
+        ];
+    })
+</script>
+</html>

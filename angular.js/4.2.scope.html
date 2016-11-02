@@ -1,0 +1,112 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+</head>
+<body >
+<div ng-controller="HelloCtrl">
+<!--高版本可以支持的自定义标签的写法-->
+张三：{{zhangsan}}
+李四：{{lisi}}
+<!--这里的只是跟scope上的属性绑定  没有跟 at-person中的数据绑定-->
+<hr>
+<at-person name="{{zhangsan}}"></at-person>
+<at-person name="{{lisi}}"></at-person>
+</div>
+<div ng-controller="HelloCtrl">
+    <!--高版本可以支持的自定义标签的写法-->
+    张三：{{zhangsan}}
+    李四：{{lisi}}
+    <!--这里的只是跟scope上的属性绑定  没有跟 at-person中的数据绑定-->
+    <hr>
+    <eq-person name="zhangsan"></eq-person>
+    <eq-person name="lisi"></eq-person>
+</div>
+
+<div ng-controller="HelloCtrl">
+    <!--高版本可以支持的自定义标签的写法-->
+    张三：{{zhangsan}}
+    李四：{{lisi}}
+    <!--这里的只是跟scope上的属性绑定  没有跟 at-person中的数据绑定-->
+    <hr>
+    <and-person name="zhangsan" greet="greet(name)"></and-person>
+    <and-person name="lisi" greet="greet(name)"></and-person>
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+        $scope.zhangsan='zhangsan';
+        $scope.lisi='lisi';
+        $scope.greet = function( name ){
+            alert( 'greet:' + name );
+        }
+    });
+    //创建一个指令
+    //组件式指令
+    /*
+    @ = & 就是为了在指令内部 调用指令外部scope上的属性  将外部scope的属性传到指令内部
+    */
+    angular.module('helloAngular').directive('atPerson',function(){//
+        return {
+            //模板 实现dom元素的转换
+            //scope:true,//每个指令实例拥有各自的scope
+            scope:{
+                /*
+                @: scope上name的值等于指令属性上的name字面量的值
+                   把当前属性作为字符串传递  还可以绑定来自外层scope上的值  在属性中插入{{}}即可
+                 */
+              name/*scope属性的名字*/:'@name'/*指令属性的名字*///当前scope的name属性引用指令上name属性的字面量的值
+            },
+            template:'<input type="text" ng-model="name"><div>姓名:{{name}}</div>'
+            //template:'<div>姓名:{{name}}</div>'
+        }
+    });
+
+    angular.module('helloAngular').directive('eqPerson',function(){//
+        return {
+            //模板 实现dom元素的转换
+            //scope:true,//每个指令实例拥有各自的scope
+            scope:{
+                /*
+                 @: scope上name的值等于指令属性上的name字面量的值
+                 把当前属性作为字符串传递  还可以绑定来自外层scope上的值  在属性中插入{{}}即可
+                 =:双向数据绑定
+                 scope上的属性和指令上的属性双向绑定
+                 */
+                name/*scope属性的名字*/:'=name'/*指令属性的名字*///当前scope的name属性引用指令上name属性的字面量的值
+            },
+            template:'<input type="text" ng-model="name"><div>姓名:{{name}}</div>'
+            //template:'<div>姓名:{{name}}</div>'
+        }
+    });
+
+    angular.module('helloAngular').directive('andPerson',function(){//
+        return {
+            //模板 实现dom元素的转换
+            //scope:true,//每个指令实例拥有各自的scope
+            scope:{
+                /*
+                 @: scope上name的值等于指令属性上的name字面量的值
+                 把当前属性作为字符串传递  还可以绑定来自外层scope上的值  在属性中插入{{}}即可
+                 =:双向数据绑定
+                 scope上的属性和指令上的属性双向绑定
+                 当scope属性名和指令的属性名重名的时候可以省略 不一样就不可以省略
+                 &:在指令的内部引用指令外部的方法
+                 */
+                name/*scope属性的名字*/:'=name',/*指令属性的名字*///当前scope的name属性引用指令上name属性的字面量的值
+                greet:'&'//表示引用一个函数或者一个方法 同名可以省略 不同命要写上
+            },
+            template:'<input type="text" ng-model="namexx" ><div>姓名:{{name}}<button ng-click="greet({name:namexx})">打招呼</button></div>'
+            //template:'<div>姓名:{{name}}</div>'
+        }
+    });
+
+
+</script>

@@ -1,0 +1,97 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css"/>
+</head>
+<body class="container" ng-controlller="dclCtrl">
+<form action="" name="userform" novalidate="novalidate">
+<!--如果想用angularjs的表单验证 要把h5的表单去掉 novalidate-->
+<div class="form-group" ng-class="{'has-error':userform.password.$invalid && userform.password.$dirty }">
+    <label for="password" class="control-label">密码</label>
+    <input type="password" name="password" id="password" class="form-control" ng-model="password" >
+    <!--form 表单一定要加name 其他都是次要的-->
+</div>
+<div class="form-group" ng-class="{'has-error':userform.repassword.$invalid && userform.repassword.$dirty }">
+    <label for="repassword" class="control-label">重复密码</label>
+    <input same-password="password" type="text" name="repassword" id="repassword" class="form-control" ng-model="repassword" >
+    <!--form 表单一定要加name 其他都是次要的-->
+</div>
+
+    <div class="form-group">
+        <label for="balance">存款</label>
+        <input money type="text" class="form-control" ng-model="balance" name="balance" id="balance">
+    </div>
+</form>
+<pre>
+    {{userform | json }}
+</pre>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+
+    });
+    //创建一个指令
+    //组件式指令
+    /*
+    @ = & 就是为了在指令内部 调用指令外部scope上的属性  将外部scope的属性传到指令内部
+    */
+    //过滤器服务的名字就是 过滤器的名字+filter
+    angular.module('helloAngular').directive('samePassword',function(  ){//注入服务
+        return {
+            //连接函数  实现dom操作  scope赋值的
+            /*
+            scope 可以是独立的作用域 也可以是上级作用域  当前作用域
+            当前元素的query对象
+            属性
+             */
+
+            require:'ngModel',
+            link:function( scope, element, attrs, ngModel ){
+                //每个属性代表一个验证器
+                // modelValue scope上的value值 模型值  viewValue是input上的值  视图值  两者可以不一样
+                ngModel.$validators.validSame = function(modelValue, viewValue ){
+                    var val = viewValue || modelValue;
+                    //return val = scope.password;//ok
+                    //return val == scope[attrs['samePassword']];//scope.password;//可以
+                    // 相当于 scope.password
+                    return val == scope.$eval( attrs['samePassword'] );//计算表达式的值
+                }
+
+
+                scope.$watch( function(){
+                    return scope.$eval( attrs['samePassword']);
+                },function( newVal, oldVal ){
+                    //设置字段值的有效性
+                    ngModel.$setValidity('validSame',  scope.$eval( attrs['samePassword'])  == scope.repassword );
+                })
+            }
+        }
+    });
+
+
+    angular.module('helloAngular').directive('money', function(){
+        return {
+            require:'ngModel',
+            link:function( scope, element, attrs, ngModel ){
+                //从视图到模型
+                ngModel.$parsers.push( function( viewValue ){
+                    return viewValue.slice( 1 );
+                } );
+                //从模型到视图
+                ngModel.$formatters.push( function( modelValue ){
+                    return '$' + (modelValue||'');
+                });
+
+            }
+        }
+    });
+//19
+</script>

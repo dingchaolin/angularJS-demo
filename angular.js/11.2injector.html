@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="bb" ng-app="dclMod">
+<div ng-controller="dclCtrl">
+    <button ng-click="show()">显示</button>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    angular.module('dclMod',[]);
+    angular.module('dclMod').provider('hello', function(){
+        //必须提供一个$get的方法  实际服务注入的是$get的返回值
+       this.$get = function(){
+           return 'hello';
+       }
+    });
+    angular.module('dclMod').provider('hello1', function(){
+        //必须提供一个$get的方法  实际服务注入的是$get的返回值
+        this.$get = function(){
+            return 'hello1';
+        }
+    });
+    //当angular 启动的时候 会先创建一个注射器，
+    //因为没有注射器 就没有办法创建服务 没有服务  什么都无法实现
+    //angular.element = $ = jQuery
+    // 获取document的jq对象
+
+    angular.module('dclMod').controller('dclCtrl', function( $scope ){
+        $scope.show = function(){
+            //得到angular自己启动创建的注射器
+            var injector = angular.element( document.querySelector('#bb') ).data('$injector');
+            //console.log( data );
+            //实例化参数对象 并且执行此函数
+            injector.invoke( function( hello1 ){
+                console.log( hello1 );
+            });
+            //获取对应的服务实例
+            var hello = injector.get('hello');
+            console.log( hello );
+            //获取参数  返回值是一个数组  把形参签名转成字符串数组 函数没有执行
+            var args = injector.annotate( function(a,b){});
+            console.log( args );
+
+            //has 可以判断 是否有次服务
+            var exists = injector.has('$http');
+            console.log( exists );
+
+            //实例化一个服务
+            var obj = injector.instantiate( function( hello ){
+                this.hello = hello;
+            });
+            console.log( obj );
+        }
+    })
+
+    //27
+
+</script>
+</html>

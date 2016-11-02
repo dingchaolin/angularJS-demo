@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod" >
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body >
+<div ng-controller="watchCtrl" >
+    <input type="text" ng-model="one">
+    <input type="text" ng-model="two">
+    <input type="text" ng-model="three">
+</div>
+</body>
+<script src="../angular.js"></script>
+<script>
+    //39.00
+    angular.module('dclMod', [] );//两个参数  定义一个模块
+    //一个参数 获取一个模块
+    angular.module('dclMod').controller('watchCtrl', function( $rootScope,$scope,$timeout ){
+        //$timeout( function(){ $scope.age = 333 },2000 );
+        //每当age发生变化的时候 回调函数都会执行
+        $scope.$watch('one', function ( newVal, oldVal ){
+            $scope.two = newVal;
+
+        })
+        $scope.$watch('two', function ( newVal, oldVal ){
+            $scope.three = newVal;
+
+        })
+
+    })
+
+</script>
+</html>

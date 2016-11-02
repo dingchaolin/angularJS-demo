@@ -1,0 +1,62 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body ng-controller="HelloCtrl as vm">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-4">
+            <input type="text" ng-model="vm.a" class="form-control">
+            <select name="" id="" ng-model="vm.opr" class="form-control">
+                <options>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                    <option value="*">*</option>
+                    <option value="/">/</option>
+                </options>
+            </select>
+            <input type="text" ng-model="vm.b" class="form-control">
+            <button ng-click="vm.doCal()" class="btn btn-primary">=</button>
+            <div ng-bind="vm.result"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").provider('dclCalculator', function(){
+        //配置的时候 配置的这个实例  并且所有的实例都是单例的
+        var prefix = '$';
+        this.setPrefix = function( p ){
+            prefix = p;
+        }
+        //注入的时候 是注入的这个实例
+        this.$get = function(){
+            return {
+                '+':function(a,b){return prefix+(parseInt(a)+parseInt(b));},
+                '-':function(a,b){return prefix+(parseInt(a)-parseInt(b));},
+                '*':function(a,b){return prefix+(parseInt(a)*parseInt(b));},
+                '/':function(a,b){return prefix+(parseInt(a)/parseInt(b));}
+            }
+        }
+    });
+    angular.module("helloAngular").config( function(dclCalculatorProvider){
+        //配置的时候 一定是服务名 + 后缀  dclCalculator + Provider
+        dclCalculatorProvider.setPrefix('￥');
+
+    });
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( dclCalculator ){
+        var vm = this;
+        vm.doCal = function(){
+            vm.result = dclCalculator[vm.opr](vm.a,vm.b);
+       }
+    });
+
+</script>
+</html>

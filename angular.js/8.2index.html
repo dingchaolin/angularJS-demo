@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="uiMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="dclCtrl">
+<button ng-click="goUsers()">users</button>
+<ul>
+    <li><a ui-sref="users">users</a></li>
+    <li><a ui-sref="index">index</a></li><!--ui-sref=状态名 不是路径  也是单页应用-->
+
+</ul>
+<div ui-view></div>
+</body>
+<script src="angular.js"></script>
+<script src=".\node_modules\angular-ui-router\release\angular-ui-router.js"></script>
+<script>
+    angular.module( 'uiMod', ['ui.router'] );
+    angular.module('uiMod').config( function( $stateProvider, $urlRouterProvider ){
+        $urlRouterProvider.otherwise('/index');//默认路径 或者路径出错的时候 会跳转到该路径下
+        $stateProvider.state('index',{
+            url:'/index',
+            template:'<h1>hello world</h1>'
+        }).state('users',{
+            url:'/users',
+            templateUrl:'8.2users.html',
+            controller:function( $scope,$http,title,users ){
+                //在resoleve 中定义了 title 和 users 服务  在这里可直接使用
+                $scope.users = users;
+                $scope.title = title.name;
+            },
+            need_login:true,
+            onEnter:function(){//当进入路由的时候
+                alert( '进入用户路由!');//仅仅在users这个路由中弹出
+            },
+            onExit:function(){//退出用户路由的时候
+                alert('退出用户路由！' );//仅仅在users这个路由中弹出
+            },
+            //定义两个服务 服务可以是同步 也可以是异步 可以返回对象 也可以返回promise
+            resolve:{//可以在这里配置一些服务 这里提供的服务可以在控制器里面使用 可以为控制器提供依赖注入项
+                title:function(){
+                    return {name:'用户列表'}
+                },//服务可以是key-value 形式 也可以是一个function
+                users:function($q,$timeout){
+                    var defer = $q.defer();
+                    $timeout( function(){
+                        defer.resolve(['dcl1','dcl2']);
+                        //defer.reject('失败！');//失败就不会跳转了
+                    },3000);
+                    return defer.promise;//返回的是promise 只有执行 resolve 的时候 才会执行后续的操作
+
+                }
+
+            }
+        })
+    })
+    angular.module('uiMod').controller( 'dclCtrl', function( $scope,$state ){
+        $scope.goUsers = function(){
+            $state.go('users');//里面写的状态名 不是路径名
+            // $state.go('users333');//会有状态无效的情况
+        }
+    });
+    angular.module('uiMod').run( function( $rootScope, $state ){
+        /*
+        $stateNotFound 当状态无法找到时 发生
+        $stateChangeStart 切入状态前发生
+        $stateChangeSuccess 切入状态后发生
+        $stateChangeError 当模板解析过程中发生错误时触发
+        1:20
+         */
+        $rootScope.$on( '$stateChangeStart', function(
+                event, toState, toParams, fromState, fromParams ){
+            if( toState.need_login ){//如果没有该状态 则不需要验证
+                if( !$rootScope.me ){
+                    alert( '你还没登录！' );
+                    event.preventDefault();//阻止路由跳转
+                    $state.go('index');//跳转到首页去
+                    return;
+                }
+            }
+        });
+        $rootScope.$on( '$stateNotFound', function(
+                event, toState, toParams, fromState, fromParams ){
+            alert('状态无效！');//无法进入某个状态时 会有状态无效状态
+            $state.go('index');
+        });
+
+        $rootScope.$on( '$stateChangeError', function(
+                event, toState, toParams, fromState, fromParams ){
+            alert('切换出错了！'); //templateUrl:'***.html' 找不到该html 就会报该错误
+            $state.go('index');
+        });
+    });
+</script>
+</html>

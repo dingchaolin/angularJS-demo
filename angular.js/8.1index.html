@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="uiMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="dclCtrl">
+<button ng-click="goUsers()">users</button>
+<ul>
+    <li><a ui-sref="index">index</a></li><!--ui-sref=状态名 不是路径  也是单页应用-->
+    <li><a ui-sref="users">users</a></li>
+</ul>
+<div ui-view></div>
+</body>
+<script src="angular.js"></script>
+<script src="//cdn.bootcss.com/angular-ui-router/1.0.0-beta.2/angular-ui-router.js"></script>
+<script>
+    angular.module( 'uiMod', ['ui.router'] );
+    angular.module('uiMod').config( function( $stateProvider, $urlRouterProvider ){
+        $urlRouterProvider.otherwise('/index');//默认路径 或者路径出错的时候 会跳转到该路径下
+        $stateProvider.state('index',{
+            url:'/index',
+            template:'<h1>hello world</h1>'
+        }).state('users',{
+            url:'/users',
+            templateUrl:'8.1users.html',
+            controller:function( $scope,$http,$q ){
+
+                //$http 返回的是一个promise  可以使用then 通过controller 返回一个promise 实现赋值
+                return $http.get('8.1users.json').then( function( data ){
+                    $scope.users = data.data;
+                });
+
+                //也可以通过$q 来实现promise
+               // var defer = $q.defer();
+                //详见 8.2index.html
+
+
+            }
+        })
+    })
+    angular.module('uiMod').controller( 'dclCtrl', function( $scope,$state ){
+        $scope.goUsers = function(){
+            $state.go('users');//里面写的状态名 不是路径名
+        }
+    })
+</script>
+</html>

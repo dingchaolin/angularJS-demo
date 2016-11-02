@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="dclCtrl">
+<div ng-init="show=false">
+    {{show}}
+    <!--<button ng-click="show=!show">show/hide</button> 既可以写表达式 也可以写方法调用-->
+    <button ng-click="change()">show/hide</button>
+    <span ng-hide="show">content</span>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller( 'dclCtrl', function($scope){
+        $scope.change = function(){
+            $scope.show = !$scope.show;
+        }
+    })
+</script>
+</html>

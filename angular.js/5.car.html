@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="totalCtrl">
+    总价格{{total}}
+    <div ng-controller="detailCtrl">
+        <table>
+            <tr>
+                <td>商品</td><td>价格</td><td>数量</td>
+            </tr>
+            <tr ng-repeat="item in items">
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.amount}}</td>
+                <td><input type="text" ng-change="$emit('change')" ng-model="item.amount"></td>
+            </tr>
+            {{name}}
+        </table>
+
+    </div>
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+   angular.module('dclMod', [] );//两个参数  定义一个模块
+   //一个参数 获取一个模块
+   angular.module('dclMod').controller('totalCtrl', function( $scope ){
+       $scope.total = 0;
+       $scope.items = [
+           {'name':'飞机',price:1,amount:1},
+           {'name':'大炮',price:1,amount:1},
+       ];
+       $scope.$on('change', function( event, num ){
+           var total = 0;
+           $scope.items.forEach( function( item ){
+               total += item.price * item.amount;
+           } )
+           $scope.total = total;
+       })
+       $scope.name = "dcldcl";
+   })
+   angular.module('dclMod').controller('detailCtrl', function( $scope ){
+
+       $scope.name = "dclysdclys";//同样的属性
+       // 会先从父作用域进行查找 再从子作用域进行查找
+       // 子作用域的同名属性会覆盖掉父  作用域的同名属性
+   })
+
+   //什么时候用watch  用on
+    /*
+    on 注册事件的时候 使用on
+    watch 观察者模型上值得变化
+     */
+</script>
+</html>

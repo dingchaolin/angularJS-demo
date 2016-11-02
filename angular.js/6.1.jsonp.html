@@ -1,0 +1,31 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body >
+
+<ul class="list-group" keyword="zfpx">
+  <li class="list-group-item" ng-repeat="item in items">{{item}}</li>
+</ul>
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").directive('keyword',function($http,$window){
+        return{//组件式指令
+            link:function( scope, element, attr ){
+                $http.jsonp('http://suggestion.baidu.com/su?wd=' + attr['keyword']+'&cb=show');
+
+                $window.show = function( data ){
+                    console.log( data );
+                    scope.items = data.s;
+                }
+            }
+        }
+    })
+
+</script>
+</html>

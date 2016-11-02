@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body ng-controller="dclCtrl">
+<!--引入的时候 需要加上 ''  否则就是一个变量 会从scope上去找  加上'' 是个字符串 之后就可以了-->
+<div ng-include="'header.html'"></div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller( 'dclCtrl', function($scope){
+        $scope.menus = [{name:'Home'},
+            {name:"Profile"},
+            {name:"Messages"}
+        ];
+        $scope.click = function( name ){//父级的方法  dclctrl的方法
+            $scope.selectedMenu = name ;
+        }
+        $scope.selectedMenu = 'Home';
+    })
+</script>
+</html>

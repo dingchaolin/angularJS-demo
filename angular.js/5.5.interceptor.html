@@ -1,0 +1,74 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body ng-controller="HelloCtrl as vm">
+<div class="alert alert-danger">{{message}}</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+
+    //当定义一个控制器之后 就会送一个$scope对象
+    //推断式  声明式 注入  一般使用声明式   便于压缩
+    //声明式
+//    angular.module("helloAngular").controller('HelloCtrl', ['$log','$http',function( l,h ){
+//        l.error("error");
+//    }]);
+    //推断式
+    //config
+//    $http({
+//        url:'',
+//        type:'GET'
+//    });
+    //配置拦截器
+    angular.module("helloAngular").config( function($httpProvider){
+       $httpProvider.interceptors.push('dclInterceptor');
+    });
+    angular.module("helloAngular").controller('HelloCtrl',function( $http ){
+        $http.get('http://localhost:8080').success( function(data, status, headers, config ){
+            //参数  响应体  状态码  响应头  请求的配置对象
+            console.log( arguments );
+        }).error( function(){
+            console.log( arguments );
+        }).then( function( response ){
+
+        })
+    });
+    angular.module("helloAngular").factory('dclInterceptor',function($rootScope){
+        return {
+            //会在$http发送到后台之前执行 在这里你可以修改配置
+            //接收配置对象作为参数 然后必须返回配置对象或者promise
+            //如果返回无效的配置对象 或者promise拒绝  $http调用失败
+            'request':function( config ){
+                return config;
+            },
+            //该方法会在http接收到后台的响应时执行，你可以修改响应
+            //接收响应对象作为参数 必须返回响应对象 或者 promise
+            //响应对象包括了请求配置 请求头 状态 和状态体
+            //
+            'response':function( response ){
+                response.data = "DCL";
+                return response;
+            },
+            //请求发送失败 或者被拦截器拒绝会调用回调
+            'requestError':function(rejection){
+
+            },
+            //如果后台响应失败，
+            'responseError':function( rejection ){
+                switch( rejection.status ){
+                    case 401:console.log( '需要登录' );
+                    case 403:console.log( '登录之后，没有权限' );
+                    case 404:console.log( '找不到页面' );
+                    case 500:console.log( '服务器端错误' );$rootScope.message='服务器端错误';
+
+                }
+            }
+        }
+    })
+</script>
+</html>

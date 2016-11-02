@@ -1,0 +1,10 @@
+npm install -g karma --save-dev  全局安装�
+npm install karma --save-dev     ���本地安装��
+
+npm install karma-junit-reporter --save-dev  ��Ԫ�报告器����
+npm install karma-jasmine  --save-dev  ����茉莉花
+npm install karma-firefox-launcher  --save-dev ���浏览器启动������
+
+
+karma init
+karma start karma.conf.js //[配置文件名 ]

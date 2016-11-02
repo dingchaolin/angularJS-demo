@@ -1,0 +1,110 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css"/>
+</head>
+<body class="container" ng-controlller="dclCtrl">
+<form action="" name="userform" novalidate="novalidate">
+<!--如果想用angularjs的表单验证 要把h5的表单去掉 novalidate-->
+<div class="form-group" ng-class="{'has-error':userform.email.$invalid && userform.email.$dirty }">
+    <label for="email" class="control-label">邮箱</label>
+    <input type="email" name="email" id="email" class="form-control" dcl-errors ng-model="email" ng-minlength="3">
+    <!--form 表单一定要加name 其他都是次要的-->
+    <!--
+    <p class="help-block" ng-show="userform.email.$error.email">
+        此email输出不合法
+    </p>
+    <p class="help-block" ng-show="userform.email.$error.minlength">
+        不满足最小长度
+    </p>
+    -->
+
+</div>
+<div class="form-group" >
+    <input type="text"  class="btn btn-default" ng-disabled="userform.$pristine ||
+    (userform.$dirty && userfrom.$invalid)" type="button" value="提交">
+</div>
+</form>
+<pre>
+    {{userform | json }}
+</pre>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+
+    });
+    //创建一个指令
+    //组件式指令
+    /*
+    @ = & 就是为了在指令内部 调用指令外部scope上的属性  将外部scope的属性传到指令内部
+    */
+    //过滤器服务的名字就是 过滤器的名字+filter
+    angular.module('helloAngular').directive('dclCurrentTime',function( $interval,dateFilter ){//注入服务
+        return {
+            //连接函数  实现dom操作  scope赋值的
+            /*
+            scope 可以是独立的作用域 也可以是上级作用域  当前作用域
+            当前元素的query对象
+            属性
+             */
+
+            link:function( scope, element, attrs ){
+                function updateTime(){
+                    element.html( dateFilter( new Date(),scope[attrs['dclCurrentTime']] ) );//代码里面用形式都要转换
+                 }
+                var timeoutId = $interval( function(){//会触发脏值检查
+                    updateTime();
+                },1000);
+                $scope.on('destroy', function(){
+
+                    $interval.cancel( timeoutId );
+                })
+            }
+        }
+    });
+    //定义一个常量
+    angular.module('helloAngular').constant('errors',{
+        'email':'邮箱不合法',
+        'minlength':'最小长度不够'
+    });
+    angular.module('helloAngular').filter('error',function(errors){
+
+        return function (input){
+            return errors[input];
+        }
+    });
+
+    angular.module('helloAngular').directive('dclErrors', function($compile){
+       return {
+           restrict:'A',
+           require:'ngModel',
+           link:function( scope, element, attrs, ngModel ){
+               //动态生成dom元素 并自动插入到当前input的后面
+               //1. 生成一个独立的scope
+               var subScope = scope.$new( true );
+               subScope.hasError = function(){
+                   return ngModel.$invalid && ngModel.$dirty;
+               };
+               //得到错误对象
+               subScope.errors = function(){
+                   return ngModel.$error;
+               }
+               //进行模板的编译
+               var tmpl = $compile( '<p ng-repeat="(key, value) in errors()" class="help-block" ng-show="hasError()">{{key | error }} </p>');
+               //得到一个jquery对象
+               var tips = tmpl( subScope );
+               //插入到当前元素后面
+               element.after( tips );
+           }
+       }
+    });
+//26
+</script>

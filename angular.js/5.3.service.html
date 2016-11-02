@@ -1,0 +1,57 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body ng-controller="HelloCtrl as vm">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-4">
+            <input type="text" ng-model="vm.a" class="form-control">
+            <select name="" id="" ng-model="vm.opr" class="form-control">
+                <options>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                    <option value="*">*</option>
+                    <option value="/">/</option>
+                </options>
+            </select>
+            <input type="text" ng-model="vm.b" class="form-control">
+            <button ng-click="vm.doCal()" class="btn btn-primary">=</button>
+            <div ng-bind="vm.result"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").service('dclCalculator', function(){
+        this.prefix = '$';
+        this['+'] = function(a,b){return this.prefix+(parseInt(a)+parseInt(b));};
+        this['-'] = function(a,b){return this.prefix+(parseInt(a)-parseInt(b));};
+        this['*'] = function(a,b){return this.prefix+(parseInt(a)*parseInt(b));};
+        this['/'] = function(a,b){return this.prefix+(parseInt(a)/parseInt(b));};
+    });
+//    angular.module("helloAngular").config( function(dclCalculatorProvider){
+//        //配置的时候 一定是服务名 + 后缀  dclCalculator + Provider
+//        dclCalculatorProvider.setPrefix('￥');
+//
+//    });
+    //当定义一个控制器之后 就会送一个$scope对象
+    //angular.module('helloAngular').value('prefix','￥');//不能注入到config 不能配置
+    angular.module('helloAngular').constant('person',{name:'dcl'});
+    //本身的引用不能改 值能改 可以注入到config中去
+
+    angular.module('helloAngular').config( function(person){
+        person.name = 'ys';
+    });
+    angular.module("helloAngular").controller('HelloCtrl', function( dclCalculator,person ){
+        alert(person.name);
+    });
+
+</script>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="dclCtrl">
+<div ng-repeat="name in names">
+   <div times="2">
+        <span>{{name}}</span>
+    </div>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller('dclCtrl', function( $scope,$timeout ){
+        $scope.names = ['1','2'];
+
+    })
+    angular.module('dclMod').directive('times',function(){
+        return {
+            //compile 只会执行一次
+            //compile和link分开 会提高效率  因为compile只会执行一次 而 link会执行多次
+            compile:function( element,attrs){
+                console.log('compile...');
+                var child = element.children();
+                for( var i = 1; i < attrs['times']; i++){
+                    element.append( child.clone() );
+                    //console.log(child.clone());
+                }
+                //compile 必须返回一个link函数 它会覆盖外面的link函数
+                //link的次数取决于names里面的值的个数 有几个就会链接几次
+                return function ( scope, element, attr ){
+                    console.log( "compile link ");
+                }
+            },
+            //如果上面返回了link函数 此处的link就不在执行了
+            link:function( scope, element, attr ){
+                console.log('link');
+            }
+        }
+    })
+</script>
+</html>

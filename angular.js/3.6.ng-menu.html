@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body ng-controller="dclCtrl">
+<ul class="nav nav-tabs">
+    <li ng-repeat="menu in menus"
+        ng-click="click(menu.name)"
+        role="presentation" ng-class="{active:selectedMenu == menu.name}"><a href="#">{{menu.name}}</a></li>
+    </ul>
+<!--ng-class 最常用的两个地方 导航切换  表单的状态-->
+<div class="container">
+    <form action="" >
+        <div class="form-group" ng-class="{'has-error':username.length<=3,'has-warning':username.length<=6,'has-success':username.length>6}">
+            <label class="control-label" for="username">用户名</label>
+            <input class="form-control" type="text" id="username" ng-model="username" >
+        </div>
+    </form>
+
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller( 'dclCtrl', function($scope){
+        $scope.menus = [{name:'Home'},
+            {name:"Profile"},
+            {name:"Messages"}
+        ];
+        $scope.click = function( name ){//父级的方法  dclctrl的方法
+            $scope.selectedMenu = name ;
+        }
+        $scope.selectedMenu = 'Home';
+    })
+</script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+</head>
+<body>
+<div ng-controller="HelloCtrl">
+    <span>{{name}}</span>
+    <input type="text" ng-model="name">
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope, $http, $timeout ){
+        //model
+        $scope.name = 'dcl';
+        $timeout( function(){
+            $scope.name = 'timeout';
+        },2000 );
+
+//        var user = {
+//            name:'dcl'
+//        };
+        //$scope叫做视图模型  修改了这里 view也会修改   双向数据绑定
+        //mvvm的好处
+        /*
+         1.低耦合  一个视图模型可以绑定到不同的view上
+         2.可重用性
+         3.独立开发
+         4.可测试性
+         */
+        //$scope.name = user.name;
+        $scope.add = function( a, b ){
+            return a+b;
+        }
+
+    });
+</script>
+</html>

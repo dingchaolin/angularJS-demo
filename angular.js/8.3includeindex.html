@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="uiMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body >
+<ul>
+    <li><a ui-sref="state1">state1</a> </li>
+    <li><a ui-sref="state2">state2</a> </li>
+    <li><a ui-sref="profile">profile</a> </li>
+</ul>
+<div ui-view></div>
+</body>
+<script src="angular.js"></script>
+<script src="//cdn.bootcss.com/angular-ui-router/1.0.0-beta.2/angular-ui-router.js"></script>
+<script>
+    angular.module( 'uiMod', ['ui.router'] );
+    angular.module('uiMod').config( function( $stateProvider, $urlRouterProvider ){
+        $urlRouterProvider.otherwise('/state1');//默认路径 或者路径出错的时候 会跳转到该路径下
+        $stateProvider.state('state1',{
+            url:'/state1',
+            templateUrl:'tmpl/state1.html'
+        }).state('state1.list',{
+            url:'/list',
+            templateUrl:'tmpl/state1.list.html'
+
+        }).state('state1.add',{
+            url:'/add',
+            templateUrl:'tmpl/state1.add.html'
+
+        }).state('state2',{
+            url:'/state2',
+            templateUrl:'tmpl/state2.html'
+        }).state('state2.list',{
+            url:'/list',
+            templateUrl:'tmpl/state2.list.html'
+
+        }).state('state2.add',{
+            url:'/add',
+            templateUrl:'tmpl/state2.add.html'
+
+        }).state('profile',{//模板嵌套 状态嵌套
+            url:'/profile',
+            views:{
+                '':{templateUrl:'tmpl/profile.html'},//'' 表示默认模板
+                //@ 符号表示子模板
+                'userinfo@profile':{
+                templateUrl:'tmpl/userinfo.html'
+            },
+                'contactinfo@profile':{
+                    template:'石家庄新乐'
+                }
+            }
+
+        })
+    })
+
+</script>
+</html>

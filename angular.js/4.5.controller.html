@@ -1,0 +1,80 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+</head>
+<body >
+<girl beautiful clever></girl>
+</body>
+<script src="./angular.js"></script>
+<script>
+    //CSS的引用放上面  js的引用放下面
+    //一个参数：获取到定义的模块
+    //两个参数:定义一个模块
+    //一切从模块开始 其他所有的组件都挂在模块下面
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+
+    });
+    //创建一个指令
+    //组件式指令
+    /*
+    @ = & 就是为了在指令内部 调用指令外部scope上的属性  将外部scope的属性传到指令内部
+    */
+    //过滤器服务的名字就是 过滤器的名字+filter
+    /*
+    1. ? 如果同级找不到，会赋值null  ？girl
+    2. ^ 在同级和上级中查找         ^girl
+    3. ^? 在同级和上级查找 如果找不到  会赋值 null  ^?girl
+    4. 没有前缀  在同级中查找 找不到会报错
+     */
+    angular.module('helloAngular').directive('girl',function(  ){//注入服务
+        return {
+            restrict:'E',//作为元素 只能出现在标签里
+            scope:true,//独立作用域
+            //link 用来将指令隔离开来  conttroller 用来定义可以复用的行为和可以提供给别的指令调用的方法
+            controller:function( $scope, $element, $attrs ){//这里的参数不是形参 是服务 需要加$符注入
+                $scope.kinds = [];
+                this.add = function( kind ){
+                    $scope.kinds.push( kind );
+                }
+            },
+            /*
+            防止被替换掉：会显示在标签的内部
+            //tranclude:true,//会保留指令标签内部的标签
+            //template:'<div ng-tranclude>juan{{kinds}}</div>'
+             */
+            template:'<h1>juan</h1>{{kinds}}',
+            //link 里是形参 可以随便写
+            link:function( scope, element, attrs ){
+                element.bind( 'click', function(){
+                    alert( scope.kinds );
+                })
+            }
+        }
+    });
+
+    angular.module('helloAngular').directive('beautiful',function(  ){//注入服务
+        return {
+
+            //link 里是形参 可以随便写
+            require:'girl',
+            link:function( scope, element, attrs, girlCtrl ){
+                girlCtrl.add( 'beautiful' );
+                }
+            }
+    });
+
+    angular.module('helloAngular').directive('clever',function(  ){//注入服务
+        return {
+
+            //link 里是形参 可以随便写
+            require:'girl',//表示当前指令依赖的其他指令
+            link:function( scope, element, attrs, girlCtrl ){
+                girlCtrl.add( 'clever' );
+            }
+        }
+    });
+//26
+</script>

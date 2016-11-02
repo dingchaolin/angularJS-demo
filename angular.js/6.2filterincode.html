@@ -1,0 +1,27 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body ng-controller="HelloCtrl as vm" >
+{{total | nc:1:"人民币"}}
+
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").controller('HelloCtrl', function($scope, numberFilter,currencyFilter ){
+        var tatal = "888.8888";
+        //$scope.total = currencyFilter( numberFilter( tatal,1 ),'人民币' );
+    })
+    angular.module("helloAngular").filter( 'nc',function(numberFilter, currencyFilter){
+        return function( input, limit, prefix ){
+            // | 前的 是第一个参数  |之后是 后面的参数
+            return currencyFilter( numberFilter( "99.99",limit ),prefix );
+        }
+    })
+
+</script>
+</html>

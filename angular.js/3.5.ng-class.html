@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body ng-controller="dclCtrl">
+<ul class="nav nav-tabs">
+    <li ng-click="selectedMenu = 'Home'" role="presentation" ng-class="{active:selectedMenu == 'Home'}"><a href="#">Home</a></li>
+    <li ng-click="selectedMenu = 'Profile'" role="presentation" ng-class="{active:selectedMenu == 'Profile'}"><a href="#">Profile</a></li>
+    <li ng-click="selectedMenu = 'Messages'" role="presentation" ng-class="{active:selectedMenu == 'Messages'}"><a href="#">Messages</a></li>
+</ul>
+<!--ng-class 最常用的两个地方 导航切换  表单的状态-->
+<div class="container">
+    <form action="" >
+        <div class="form-group" ng-class="{'has-error':username.length<=3,'has-warning':username.length<=6,'has-success':username.length>6}">
+            <label class="control-label" for="username">用户名</label>
+            <input class="form-control" type="text" id="username" ng-model="username" >
+        </div>
+    </form>
+
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller( 'dclCtrl', function($scope){
+        $scope.phones = [{name:'sanerzi2',age:1},
+            {name:"xiaomi3",age:2},
+            {name:"hhuawei1",age:3}
+        ];
+        $scope.selectedMenu = 'Home';
+    })
+</script>
+</html>

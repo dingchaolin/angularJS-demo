@@ -1,0 +1,101 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        .title{
+            width:100px;
+            height:30px;
+            border:solid red 1px;
+            background-color: red;
+        }
+
+        .content{
+            width:100px;
+            height:100px;
+            border:solid blue 1px;
+            background-color: orange;
+        }
+
+    </style>
+</head>
+<body ng-controller="HelloCtrl">
+<group>
+    <opener ng-repeat="opener in openers" title="opener.title">
+        {{opener.content}}
+    </opener>
+</group>
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $scope ){
+        $scope.openers = [
+            {title : '标题1',
+             content : '内容1'},
+            {title : '标题2',
+                content : '内容2'}
+        ];
+
+    });
+    angular.module("helloAngular").directive( 'opener', function(){
+        return {
+            restrict:'E',
+            replace:true,
+            transclude:true,//要内嵌 原来标签中的内容要保留
+            require:'^group',
+            //'group' 同级查找 没有报错 ‘？group’同级查找没有不报错 返回null
+            //'^group' 向上级查找 没有报错 ‘^？group’ 在同级和上级上查找 找不到 给 null
+            templateUrl:'temls.html',
+            scope:{
+                title:'='
+                //@ 把title属性的value值作为纯文本 去属性的字面量
+                //= 把title属性的value值作为scope的一个变量
+                // & 做为scope的一个方法
+                // 标签中，某个属性等于 {{name}}表示取得字面值
+                // ="name" 表示取得一个变量值  表达式等 调用方法什么的 都在""中写
+                /*
+                在一个标签中 比如 <div name=""/{{}}></div>
+                使用“”  {{ }} 都是可以的  “”表示是变量  {{ }} 表示是一个字面值
+                 */
+            },
+            link:function( scope, element, attr, groupCtrl ){
+                //把自己scope注册到上级指令中
+                groupCtrl.addOpener( scope );
+                //当点击标题的时候执行此方法
+                scope.toggle = function(){
+                    groupCtrl.open( scope );
+                }
+            }
+        }
+    });
+
+    angular.module("helloAngular").directive( 'group', function(){
+        return {
+            restrict:'E',
+            repalce:true,
+            transclude:true,
+            template:'<div ng-transclude></div>',
+           controller:function(){
+               //构建一个数组
+               var openers = [];
+               //提供一个注册openers scope的方法
+               this.addOpener = function( opener ){
+                   openers.push( opener );
+               };
+               //代理opener的点击事件
+               this.open = function( selecteOpener ){
+
+                   angular.forEach( openers, function( opener ){
+                       if( selecteOpener != opener ){
+                           opener.show = false;
+                       }
+
+                   });
+                   selecteOpener.show = !selecteOpener.show;
+               }
+           }
+        }
+    });
+</script>

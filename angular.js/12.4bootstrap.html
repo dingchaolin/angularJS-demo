@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="start()">启动</button>
+
+<div id="second" >
+    <div ng-controller="dclCtrl">
+        <tu></tu>
+    </div>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    function start(){
+        //bootstrap 原理
+        //1.创建注射器对象并保存到根对象的data里
+        var injector = angular.injector(['ng','dclMod']);
+        //暂存到data里
+        angular.element(document).data('$injector',injector);
+        //2 创建根作用域并保存到data里
+        var rootScope = injector.get('$rootScope');//获取根作用域
+        angular.element(document).data('$rootScope', rootScope);
+        //3 编译dom元素子树
+        var compile = injector.get('$compile');
+        //从根节点开始编译 并传入rootScope进行连接
+        compile(document)(rootScope);
+    }
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller('dclCtrl', function( $scope ){
+
+    })
+    angular.module('dclMod').directive('tu', function( ){
+        return {
+            restrict:'E',
+            replace:true,
+            template:'<img src="./img.jpg" style="width:200px;height:400px"/>'
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body>
+<div id="content" ng-controller="totalCtrl"  ng-click="click()">
+    hello
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+   angular.module('dclMod', [] );//两个参数  定义一个模块
+   //一个参数 获取一个模块
+   angular.module('dclMod').controller('totalCtrl', function( $scope ){
+       console.log( $scope );
+       $scope.click = function(){
+           /*
+            angular.element( document.querySelector("#content")) 得到dom元素对应的jquery对象
+            var s = angular.element( document.querySelector("#content")).data('$scope');
+            //得到scope对应的dom对象
+            向上传播使用$emit 向下传播使用broadcast
+            ng-controller指令就是用来定义应用程序控制器的 并且同时创建了一个新的作用域关联到响应的dom元素上
+            不用复用controller 一个控制器只负责一个视图
+            不要在控制器中操作dom 使用指令
+            不要在controller里做数据过滤和格式化 使用filter过滤器
+            控制器之间不要互相直接调用 控制器之间的交互通过事件交互
+           */
+           var s = angular.element( document.querySelector("#content")).data('$scope');//得到对应元素的qjuery对象
+           console.log( s );//scope是绑定在dom元素上的
+       }
+   });
+
+
+
+   //什么时候用watch  用on
+    /*
+    on 注册事件的时候 使用on
+    watch 观察者模型上值得变化
+     */
+</script>
+</html>

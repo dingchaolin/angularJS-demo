@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="parentCtrl">
+    {{parent}}{{count}}
+    <div ng-controller="childCtrl">
+        {{child}}{{count}}
+        <input type="text" ng-model="num">
+        <button ng-click="$emit('add', num )">向上</button>
+        <button ng-click="$broadcast('add', num )">向下</button><!--从当前scope上取值-->
+        <div ng-controller="grandCtrl">
+            {{grant}}{{count}}
+        </div>
+    </div>
+</div>
+</body>
+<script src="./angular.js"></script>
+<script>
+   angular.module('dclMod', [] );//两个参数  定义一个模块
+   //一个参数 获取一个模块
+   angular.module('dclMod').controller('parentCtrl', function( $scope ){
+       $scope.parent = 'parent';//寻找属性是往上寻找的  在父控制器 中不能访问子控制器的属性
+       $scope.count = 0;
+       $scope.$on('add', function( event, num ){
+           $scope.count = $scope.count + parseInt( num );
+       })
+   })
+   angular.module('dclMod').controller('childCtrl', function( $scope ){
+       $scope.count = 0;
+       $scope.child = 'child';
+       $scope.$on('add', function( event, num ){
+           $scope.count = $scope.count + parseInt( num );
+       })
+       /*
+       $scope.$emit = function( type ){
+           var p;
+           do{
+               p = $scope.$parent;//父级
+           }
+       }*/
+   })
+   angular.module('dclMod').controller('grandCtrl', function( $scope ){
+       $scope.grant = 'grant';
+       $scope.count = 0;
+       $scope.$on('add', function( event, num ){
+           $scope.count = $scope.count + parseInt( num );
+       })
+   })
+   //什么时候用watch  用on
+    /*
+    on 注册事件的时候 使用on
+    watch 观察者模型上值得变化
+     */
+</script>
+</html>

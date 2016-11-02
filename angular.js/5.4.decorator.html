@@ -1,0 +1,40 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body ng-controller="HelloCtrl as vm">
+
+</body>
+<script src="./angular.js"></script>
+<script>
+    angular.module("helloAngular",[]);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").config(function($provide){
+        $provide.decorator('$log', function($delegate){
+            angular.forEach(['log','debug','info','warn','error'],function( method){
+                $delegate[method] = decorator($delegate[method]);
+            });
+            function decorator(method){
+                return function(){
+                    var args = Array.prototype.slice.call( arguments );
+                    args.unshift( new Date().toLocaleString() );
+                    method.apply(null, args );
+                }
+            }
+            return $delegate;
+        })
+    });
+    //当定义一个控制器之后 就会送一个$scope对象
+    angular.module("helloAngular").controller('HelloCtrl', function( $log ){
+        var date = new Date().toLocaleString();
+        $log.debug('debug');
+        $log.error('error');
+        $log.info('info');
+        $log.warn('warn');
+        $log.log('log');
+    });
+
+</script>
+</html>

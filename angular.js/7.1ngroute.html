@@ -1,0 +1,106 @@
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="bootstrap.css">
+
+</head>
+<body  ng-controller="dclCtrl">
+<ul>
+    <!--# 表示锚点 还会在当前界面 不会跳到别的界面上去   -->
+    <a href="#/index">index</a>
+    <a href="#/users">users</a>
+    <a href="#/book">book</a>
+    <a href="#/settings">settings</a>
+
+</ul>
+<button ng-click="goUser()">登录</button>
+    <div ng-view></div>
+    <!--
+    手写 ng-view 步骤：
+    1.监听 锚点变化
+    2.渲染模板得到html代码片段
+      2.1如果是template 直接渲染
+      2.2如果是templateUrl 要先获取文件内容在渲染
+    3.清空原来的div 把片段放进去
+    -->
+</body>
+<script src="./angular.js"></script>
+<script src="angular-route.js"></script>
+<script>
+    angular.module("helloAngular",['ngRoute']);//模块名  模块依赖的其他模块
+    angular.module("helloAngular").controller('bookCtrl', function($scope ){
+        $scope.title = "world!";
+    });
+    angular.module("helloAngular").controller('dclCtrl', function($rootScope,$scope,$location ){
+        //各个模块注入的顺序不重要
+        $scope.goUser = function(){
+            $rootScope.me = "dcl";
+            $location.path('user');
+
+        }
+    });
+    //配置 在系统启动之前对路由的配置
+    angular.module('helloAngular').config( function($routeProvider ){
+        //当路由发生变化的时候 只有 ng-view在变 单页应用
+        $routeProvider.when('/',{
+            //template:'index'
+            templateUrl   : 'index.html',
+            controller:function( $scope ){
+                $scope.title = "Hello";
+
+            }
+        }).when('/users',{templateUrl:'users.html',
+            controller:function( $scope ){
+                $scope.title = "用户列表";
+                $scope.users = [{id:1,name:'dcl1'},
+                    {id:2,name:'dcl2'},
+                    {id:3,name:'dcl3'},
+                ];
+
+            }
+        }).when('/book',{template:"{{title}}",
+            controller:'bookCtrl'
+            /*
+             当内容少的时候 可以直接写一个模板  模板字符串杰克
+             当内容多的时候  使用templateUrl:"**.html"  需要建立独立的scope
+             */
+
+        }).when('/settings',{template:"settings"
+        }).when('/user/:id',{template:"{{id}}",
+            controller:function($scope, $routeParams){
+                $scope.id = $routeParams.id;
+            }
+            /*
+             当内容少的时候 可以直接写一个模板  模板字符串杰克
+             当内容多的时候  使用templateUrl:"**.html"  需要建立独立的scope
+             */
+
+        }).otherwise({redirectTo:'/'
+        });
+    });
+    //这是系统启动后的第一个方法
+    angular.module("helloAngular").run(function( $rootScope,$route ){
+        //这里可以监听路由的变化
+        $rootScope.$on('$routeChangeStart', function(event,to,from){
+            console.log( $route );
+            console.log( event );
+            console.log( to );
+            console.log( from );
+
+            if( to.$$route.originalPath == '/settings' ){
+                //用户登录之后 会把用户登录信息赋值给$rootScope.me（自己定义的属性）
+                //通过判断$rootScope.me 是否为空 来判断用户是否登录
+                //一般来说 我们登录之后 会把用户的登录信息放在 rootScope me的属性上 保证全局可用
+                if( $rootScope.me ){
+                    return alert('可以访问！');
+
+                }else{
+                    alert('禁止访问！');
+                    //event.preventDefault();//阻止界面跳转 这个不能实现阻止 界面跳转
+                }
+            }
+        })
+    });
+</script>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="animateMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width:200px;
+            height: 200px;
+            background-color: green;
+            position: absolute;
+            transition: 5s all;/*切换效果 宽和高上同时变化 变化时间是1s*/
+        }
+        .box.ng-enter{/*刚开始进入时 透明度为 0*/
+           opacity: 0;
+        }
+        .box.ng-enter-active{/*进入成功时 透明度为 1*/
+            opacity: 1;
+        }
+        .box.ng-leave{/*刚开始进入时 透明度为 0*/
+            opacity: 1;
+        }
+        .box.ng-leave-active{/*进入成功时 透明度为 1*/
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<input type="checkbox" ng-model="check">
+<div class="box" ng-if="check">
+    hello
+</div>
+</body>
+<script src="angular.js"></script>
+<script src="angular-animate.js"></script>
+<script>
+    angular.module('animateMod',['ngAnimate']);
+</script>
+</html>

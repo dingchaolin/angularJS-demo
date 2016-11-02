@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="start()">启动</button>
+<tu></tu>
+<div ng-app="dclMod">
+    <div ng-controller="dclCtrl">
+        {{name}}
+    </div>
+</div>
+<div id="second" >
+    <div ng-controller="dclCtrl">
+        {{name}}
+    </div>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    function start(){
+        var second = document.querySelector("#second");
+        angular.bootstrap( second, ['dclMod'] );//元素  引导时需要加载的元素模块数组 手动启动scope
+    }
+    angular.module('dclMod',[]);
+    angular.module('dclMod').controller('dclCtrl', function( $scope ){
+        $scope.name = "dcl";
+    })
+    angular.module('dclMod').directive('tu', function( ){
+        return {
+            restrict:'E',
+            replace:true,
+            template:'<img src="./img.jpg" style="width:200px;height:400px"/>'
+        }
+    })
+</script>
+</html>

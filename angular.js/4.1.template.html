@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body ng-controller="dclCtrl">
+<dcl-love></dcl-love><!--元素-->
+<span dcl-love= ></span><!--属性-->
+<span class="dcl-love"></span><!--类-->
+<!--directive:dcl-love 注释-->
+
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').directive( 'dclLove', function(){
+        return {
+            restrict:'AEMC',//显示的位置 A attribute  E element  M comment注释 c class 类名
+            replace:true,//会把指令本身替换掉
+            template:'<div>name:dcl</div>'//放到模板的内部 作为模板的值  使用该指令指定的html标记替换指令内容
+        }
+    })
+</script>
+</html>

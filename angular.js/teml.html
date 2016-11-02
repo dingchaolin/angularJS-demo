@@ -1,0 +1,5 @@
+<div>
+    <div class="title" ng-click="show=!show">{{title}}</div>
+    <!--ng-translate 将缓存起来的内容 放到具有ng-transclude 指令的内部-->
+    <div class="content" ng-show="show" ng-transclude></div>
+</div>

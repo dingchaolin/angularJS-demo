@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dclMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body class="container">
+<dialog>
+    <div>这是我内部的内容</div>
+</dialog>
+
+</body>
+<script src="angular.js"></script>
+<script>
+    //18:53
+    angular.module('dclMod',[]);
+    angular.module('dclMod').directive( 'dialog', function(){
+        return {
+            transclude:true,//保留原来指令的内部元素 并且自动插入到转换后的模板内部 具有ng-transclude指令的元素内部
+            restrict:'AEMC',//显示的位置 A attribute  E element  M comment注释 c class 类名
+            replace:true,//会把指令本身替换掉 为true时 要求模板必须有一个根节点
+            template:'<div class="panel panel-default"> <div class="panel-heading">头部</div><div class="panel-body" ng-transclude></div> </div>'//放到模板的内部 作为模板的值  使用该指令指定的html标记替换指令内容
+        }
+    })
+</script>
+</html>

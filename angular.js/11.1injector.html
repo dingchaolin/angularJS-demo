@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="bb" >
+<div ng-controller="dclCtrl">
+    <button ng-click="show()">显示</button>
+</div>
+</body>
+<script src="angular.js"></script>
+<script>
+    angular.module('dclMod',[]);
+    angular.module('dclMod').provider('hello', function(){
+        //必须提供一个$get的方法  实际服务注入的是$get的返回值
+       this.$get = function(){
+           return 'hello';
+       }
+    });
+    //当angular 启动的时候 会先创建一个注射器，
+    //因为没有注射器 就没有办法创建服务 没有服务  什么都无法实现
+    //angular.element = $ = jQuery
+    // 获取document的jq对象
+
+    angular.element( document).ready( function( ){
+       //创建injector
+        //返回的注册器中存放的是服务的名字和服务的定义
+        var injector = angular.injector( ['dclMod','ng'] );//返回一个注册器
+        //invoke 自动传入函数的参数并调用函数
+        injector.invoke( function( hello ){
+            console.log( hello );
+        });
+    });
+
+
+
+</script>
+</html>
